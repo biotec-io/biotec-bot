@@ -3,6 +3,12 @@ import React, { Component } from 'react';
 import { StyleSheet, KeyboardAvoidingView } from 'react-native';
 import { Header } from 'react-native-elements';
 import { GiftedChat } from 'react-native-gifted-chat';
+import { ApiAiClient } from 'api-ai-javascript';
+import { DIALOGFLOW_ACCESS_TOKEN } from 'react-native-dotenv';
+
+const dialogflow = new ApiAiClient({
+  accessToken: DIALOGFLOW_ACCESS_TOKEN,
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -22,6 +28,15 @@ class App extends Component {
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }));
+
+    this.sendMessage().done();
+  }
+
+  async sendMessage() {
+    const response = await dialogflow.textRequest('Hola');
+
+    /* Print chatbot speech */
+    console.log(response.result.fulfillment.speech);
   }
 
   UNSAFE_componentWillMount() {
