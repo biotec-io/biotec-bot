@@ -5,6 +5,7 @@ import { Header } from 'react-native-elements';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { ApiAiClient } from 'api-ai-javascript';
 import { DIALOGFLOW_ACCESS_TOKEN } from 'react-native-dotenv';
+import uuid from 'uuid';
 
 const dialogflow = new ApiAiClient({
   accessToken: DIALOGFLOW_ACCESS_TOKEN,
@@ -21,22 +22,35 @@ class App extends Component {
     super();
     this.state = {
       messages: [],
+      user: {
+        _id: 2,
+        name: 'Chatbot',
+        avatar: 'https://s3.us-east-2.amazonaws.com/biotec-io/robot.png',
+      },
     };
   }
 
   onSend(messages = []) {
+    this.appendToChat(messages);
+
+    this.sendQuery(messages).done();
+  }
+
+  appendToChat(messages = []) {
     this.setState(previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }));
-
-    this.sendMessage().done();
   }
 
-  async sendMessage() {
-    const response = await dialogflow.textRequest('Hola');
+  async sendQuery(messages = []) {
+    const response = await dialogflow.textRequest(messages[0].text);
 
-    /* Print chatbot speech */
-    console.log(response.result.fulfillment.speech);
+    this.appendToChat([{
+      _id: uuid.v4(),
+      text: response.result.fulfillment.speech === '' ? '¿puedes repetirlo?' : response.result.fulfillment.speech,
+      createdAt: new Date(),
+      user: this.state.user,
+    }]);
   }
 
   UNSAFE_componentWillMount() {
@@ -46,11 +60,7 @@ class App extends Component {
           _id: 1,
           text: 'Hola, ¿en qué puedo ayudarte?',
           createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://s3.us-east-2.amazonaws.com/biotec-io/robot.png',
-          },
+          user: this.state.user,
         },
       ],
     });
