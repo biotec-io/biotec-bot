@@ -1,6 +1,6 @@
 {
   "name": "biotecBot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "devDependencies": {
     "jest-expo": "26.0.0",
