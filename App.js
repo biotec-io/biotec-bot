@@ -1,6 +1,6 @@
 /* eslint camelcase: 0 */
 import React, { Component } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView } from 'react-native';
 import { Header } from 'react-native-elements';
 import { GiftedChat } from 'react-native-gifted-chat';
 
@@ -43,7 +43,10 @@ class App extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="padding"
+      >
         <Header
           backgroundColor="#233978"
           centerComponent={{ text: 'BiotecBot', style: { color: '#fff' } }}
@@ -56,7 +59,7 @@ class App extends Component {
             _id: 1,
           }}
         />
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
